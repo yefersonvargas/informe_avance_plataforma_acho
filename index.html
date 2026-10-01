@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe de avance en plataforma · Bioética en Hemato-Oncología · ACHO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde:#3E4729; --verde-medio:#556336; --verde-claro:#7a8f50; --verde-suave:#eef2e8;
+    --naranja:#f5841f; --naranja-claro:#fdecd9; --naranja-oscuro:#d46a10;
+    --alerta:#b3441f; --alerta-suave:#fbeae3;
+    --gris-texto:#3a3d35; --gris-suave:#8a8d80; --borde:#e2e2d8; --fondo:#faf9f5;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Source Sans 3',sans-serif;background:var(--fondo);color:var(--gris-texto);}
+  h1,h2,h3{font-family:'Playfair Display',serif;margin:0;}
+  header{background:var(--verde);color:#fff;padding:28px 40px;display:flex;align-items:center;gap:18px;}
+  header .logo{display:flex;align-items:center;gap:10px;}
+  header .titulos{margin-left:8px;}
+  header h1{font-size:1.4rem;font-weight:700;}
+  header p{margin:4px 0 0;font-size:.92rem;color:#d9e0cd;}
+  .corte{margin-left:auto;text-align:right;font-size:.82rem;color:#d9e0cd;}
+  .corte strong{color:#fff;display:block;font-size:.95rem;}
+
+  nav{display:flex;gap:4px;padding:0 40px;background:#fff;border-bottom:1px solid var(--borde);position:sticky;top:0;z-index:10;}
+  nav button{border:none;background:none;padding:16px 18px;font-family:'Source Sans 3',sans-serif;font-size:.95rem;font-weight:600;color:var(--gris-suave);cursor:pointer;border-bottom:3px solid transparent;}
+  nav button.active{color:var(--verde);border-bottom-color:var(--naranja);}
+  nav button:hover{color:var(--verde);}
+
+  main{max-width:1120px;margin:0 auto;padding:32px 40px 60px;}
+  section{display:none;}
+  section.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;}
+  .kpi{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:18px 20px;}
+  .kpi .num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--verde);}
+  .kpi .lbl{font-size:.85rem;color:var(--gris-suave);margin-top:2px;}
+  .kpi.naranja .num{color:var(--naranja-oscuro);}
+  .kpi.alerta .num{color:var(--alerta);}
+
+  .panel{background:#fff;border:1px solid var(--borde);border-radius:10px;padding:24px;margin-bottom:24px;}
+  .panel h2{font-size:1.15rem;color:var(--verde);margin-bottom:4px;}
+  .panel .sub{font-size:.85rem;color:var(--gris-suave);margin-bottom:18px;}
+
+  .dist-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .dist-row .rango{width:90px;font-size:.85rem;color:var(--gris-texto);font-weight:600;flex-shrink:0;}
+  .dist-row .barra-wrap{flex:1;background:var(--verde-suave);border-radius:6px;overflow:hidden;height:22px;}
+  .dist-row .barra{height:100%;background:linear-gradient(90deg,var(--verde-claro),var(--verde-medio));border-radius:6px;}
+  .dist-row .cifra{width:130px;text-align:right;font-size:.85rem;color:var(--gris-suave);flex-shrink:0;}
+
+  .badges{display:flex;flex-wrap:wrap;gap:10px;}
+  .badge{background:var(--verde-suave);border:1px solid var(--verde-claro);color:var(--verde-medio);padding:8px 14px;border-radius:20px;font-size:.85rem;font-weight:600;}
+  .badge.top::before{content:"✓ ";}
+  .badge.alerta{background:var(--alerta-suave);border-color:#e3a98f;color:var(--alerta);}
+  .badge.alerta::before{content:"● ";font-size:.7em;}
+
+  table{width:100%;border-collapse:collapse;font-size:.86rem;}
+  thead th{text-align:left;padding:10px 12px;border-bottom:2px solid var(--borde);color:var(--verde);font-size:.76rem;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;user-select:none;white-space:nowrap;}
+  thead th:hover{color:var(--naranja-oscuro);}
+  thead th.sort-asc::after{content:" ▲";font-size:.7rem;}
+  thead th.sort-desc::after{content:" ▼";font-size:.7rem;}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--borde);vertical-align:middle;}
+  tbody tr:hover{background:var(--verde-suave);}
+  .prog-wrap{display:flex;align-items:center;gap:8px;}
+  .prog-bar{width:90px;height:8px;background:#eee;border-radius:4px;overflow:hidden;flex-shrink:0;}
+  .prog-fill{height:100%;border-radius:4px;}
+  .prog-baja{background:var(--alerta);}
+  .prog-media{background:var(--naranja);}
+  .prog-alta{background:var(--verde-medio);}
+  .asis-si{color:var(--verde-medio);font-weight:700;}
+  .asis-no{color:var(--gris-suave);}
+  .tag-retiro{background:var(--alerta-suave);color:var(--alerta);font-size:.72rem;padding:3px 9px;border-radius:10px;font-weight:600;}
+
+  input#buscar{width:100%;max-width:340px;padding:9px 14px;border:1px solid var(--borde);border-radius:8px;font-family:inherit;font-size:.9rem;margin-bottom:16px;}
+  input#buscar:focus{outline:2px solid var(--naranja-claro);border-color:var(--naranja);}
+
+  .nota{font-size:.82rem;color:var(--gris-suave);line-height:1.5;background:var(--verde-suave);border-left:3px solid var(--verde-claro);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:18px;}
+
+  footer{text-align:center;padding:24px;font-size:.8rem;color:var(--gris-suave);}
+
+  @media(max-width:720px){
+    header{flex-wrap:wrap;padding:20px;}
+    .corte{margin-left:0;text-align:left;}
+    main{padding:24px 16px 48px;}
+    .kpis{grid-template-columns:1fr 1fr;}
+    nav{padding:0 16px;overflow-x:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg width="34" height="34" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="19" stroke="#f5841f" stroke-width="2"/>
+      <path d="M20 30V14M20 14C14 14 12 9 12 9C12 9 18 8 20 14C22 8 28 9 28 9C28 9 26 14 20 14Z" fill="#f5841f"/>
+      <path d="M20 30C20 30 14 27 14 22C14 22 20 21 20 26C20 21 26 22 26 22C26 27 20 30 20 30Z" fill="#7a8f50"/>
+    </svg>
+  </div>
+  <div class="titulos">
+    <h1>Bioética en Hemato-Oncología · ACHO</h1>
+    <p>División de Educación Continuada · Universidad El Bosque</p>
+  </div>
+  <div class="corte">
+    <strong>Corte: 1 de octubre de 2026</strong>
+    Fuente: reporte "Progreso de la clase" de la plataforma (D2L)
+  </div>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="resumen">📊 Resumen</button>
+  <button class="tab-btn" data-tab="listado">👥 Listado completo</button>
+</nav>
+
+<main>
+
+  <section id="resumen" class="active">
+    <div class="kpis">
+      <div class="kpi"><div class="num">53</div><div class="lbl">Participantes activos</div></div>
+      <div class="kpi naranja"><div class="num">59%</div><div class="lbl">Avance promedio en plataforma (antes 52%)</div></div>
+      <div class="kpi"><div class="num">2</div><div class="lbl">Completaron el 100% del contenido</div></div>
+      <div class="kpi"><div class="num">10</div><div class="lbl">Avanzaron desde el corte anterior</div></div>
+      <div class="kpi alerta"><div class="num">1</div><div class="lbl">Sin ningún avance, 0% (antes 4)</div></div>
+      <div class="kpi alerta"><div class="num">1</div><div class="lbl">Con solicitud de retiro</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Distribución de avance</h2>
+      <p class="sub">Porcentaje de contenido completado, por rangos · 53 activos · 34 ítems de contenido</p>
+      <div class="dist-row"><div class="rango">0%</div><div class="barra-wrap"><div class="barra" style="width:1.9%"></div></div><div class="cifra">1 estudiante · 1.9%</div></div>
+      <div class="dist-row"><div class="rango">1–25%</div><div class="barra-wrap"><div class="barra" style="width:13.2%"></div></div><div class="cifra">7 estudiantes · 13.2%</div></div>
+      <div class="dist-row"><div class="rango">26–50%</div><div class="barra-wrap"><div class="barra" style="width:22.6%"></div></div><div class="cifra">12 estudiantes · 22.6%</div></div>
+      <div class="dist-row"><div class="rango">51–75%</div><div class="barra-wrap"><div class="barra" style="width:26.4%"></div></div><div class="cifra">14 estudiantes · 26.4%</div></div>
+      <div class="dist-row"><div class="rango">76–100%</div><div class="barra-wrap"><div class="barra" style="width:35.8%"></div></div><div class="cifra">19 estudiantes · 35.8%</div></div>
+      <p class="nota">El curso mantiene 34 ítems de contenido, igual que en el corte anterior, por lo que los porcentajes son directamente comparables. El tramo 76-100% es el más numeroso, con 19 de 53 activos.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Mayor avance en plataforma</h2>
+      <p class="sub">Participantes con 90% de avance o más</p>
+      <div class="badges">
+        <span class="badge top">Cifuentes Cañaval, Sergio Andrés: 100%</span>
+        <span class="badge top">Parra Lara, Luis Gabriel: 100%</span>
+        <span class="badge top">Hernández Celis, Annie Natalia: 94%</span>
+        <span class="badge top">Lombana Quiñonez, Milton Alberto: 94%</span>
+        <span class="badge top">Rodríguez Martínez, María Mercedes: 94%</span>
+        <span class="badge top">Cantillo García, Ana Milena: 91%</span>
+      </div>
+      <p class="nota">Otros 9 participantes están entre 85% y 88%, a muy pocos ítems de completar el curso.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Avance desde el corte anterior (24 de septiembre)</h2>
+      <p class="sub">10 participantes completaron nuevos ítems · los 43 restantes siguen con los mismos ítems · nadie retrocedió</p>
+      <div class="badges">
+        <span class="badge top">Cifuentes Cañaval, Sergio Andrés: +30 ítems</span>
+        <span class="badge top">Zúñiga Peña, Jainny Jemir: +29 ítems</span>
+        <span class="badge top">Suárez Vásquez, Luz Deisser: +28 ítems</span>
+        <span class="badge top">Parra Lara, Luis Gabriel: +14 ítems</span>
+        <span class="badge top">Mosquera Rengifo, Eyder: +12 ítems</span>
+        <span class="badge top">Sotelo Rodríguez, Diana Carolina: +11 ítems</span>
+        <span class="badge top">Castellanos Olarte, Willian Almir: +6 ítems</span>
+        <span class="badge top">Durango, Isabel Cristina: +4 ítems</span>
+        <span class="badge top">Ortiz Gómez, León Darío: +3 ítems</span>
+        <span class="badge top">Martínez Gutiérrez, Cindy Nathalie: +2 ítems</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Menor avance</h2>
+      <p class="sub">1 participante en 0% y 7 con 25% o menos</p>
+      <div class="badges">
+        <span class="badge alerta">Sossa Melo, Claudia Lucía: 0%</span>
+        <span class="badge alerta">Ramírez Cerón, Carlos Alberto: 6%</span>
+        <span class="badge alerta">Gallego Aristizábal, Paola Andrea: 9%</span>
+        <span class="badge alerta">Parra Soto, Sandro: 15%</span>
+        <span class="badge alerta">Ramírez Escobar, Ana Francisca: 15%</span>
+        <span class="badge alerta">Andrade, Viviana Catalina: 18%</span>
+        <span class="badge alerta">Pinzón Espitia, Olga Lucía: 21%</span>
+        <span class="badge alerta">Alzate Arias, Mauricio Andrés: 24%</span>
+      </div>
+      <p class="nota">Gonzalez Florez, Héctor Alirio tiene solicitud de retiro: ya no aparece en el reporte de la plataforma y no se incluye en los cálculos.</p>
+    </div>
+  </section>
+
+  <section id="listado">
+    <div class="panel">
+      <h2>Listado completo</h2>
+      <p class="sub">54 participantes · clic en un encabezado para ordenar · incluye asistencia a las sesiones sincrónicas registradas</p>
+      <input type="text" id="buscar" placeholder="Buscar por nombre...">
+      <div style="overflow-x:auto;">
+        <table id="tabla">
+          <thead>
+            <tr>
+              <th data-col="0" data-type="text">Nombre</th>
+              <th data-col="1" data-type="num">Avance plataforma</th>
+              <th data-col="5" data-type="num">Ítems</th>
+              <th data-col="2" data-type="num">Asistencia 23/07</th>
+              <th data-col="3" data-type="num">Asistencia 13/08</th>
+              <th data-col="6" data-type="num">Calificación</th>
+              <th data-col="4" data-type="text">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Informe generado a partir del reporte de progreso de la plataforma, con corte al 1 de octubre de 2026 · Educación Continuada · Universidad El Bosque</footer>
+
+<script>
+const data = [{"nombre": "Agudelo Forero, Jorleth", "doc": "51877767", "pct": 74, "comp": 25, "retiro": false, "a1": 1, "a2": 1, "log": 2, "cal": 57.14}, {"nombre": "Alzate Arias, Mauricio Andres", "doc": "71778262", "pct": 24, "comp": 8, "retiro": false, "a1": 1, "a2": 0, "log": 1, "cal": 28.57}, {"nombre": "Andrade, Viviana Catalina", "doc": "1098758314", "pct": 18, "comp": 6, "retiro": false, "a1": 1, "a2": 1, "log": 2, "cal": 12.5}, {"nombre": "Calderon Ardila, Andres Felipe", "doc": "1018463676", "pct": 65, "comp": 22, "retiro": false, "a1": 1, "a2": 0, "log": null, "cal": 40}, {"nombre": "Cancelado Jacome, Sergio Andres", "doc": "91474852", "pct": 88, "comp": 30, "retiro": false, "a1": 1, "a2": 0, "log": 5, "cal": 66.07}, {"nombre": "Cantillo Garcia, Ana Milena", "doc": "1082915563", "pct": 91, "comp": 31, "retiro": false, "a1": 1, "a2": 0, "log": 12, "cal": 67.14}, {"nombre": "Castaño Arroyave, Monica Maria", "doc": "1128268784", "pct": 82, "comp": 28, "retiro": false, "a1": 1, "a2": 0, "log": 1, "cal": 54.29}, {"nombre": "Castellanos Olarte, Willian Almir", "doc": "13514168", "pct": 62, "comp": 21, "retiro": false, "a1": 1, "a2": 1, "log": 3, "cal": 38.21}, {"nombre": "Castiblanco Arroyave, Sara Camila", "doc": "1053838592", "pct": 74, "comp": 25, "retiro": false, "a1": 0, "a2": 1, "log": 2, "cal": 68.57}, {"nombre": "Chaparro Alzogaray, Mauricio Heli", "doc": "79591098", "pct": 65, "comp": 22, "retiro": false, "a1": 0, "a2": 0, "log": 4, "cal": 51.07}, {"nombre": "Chinchia Arias, Isabel Matilde", "doc": "49724507", "pct": 85, "comp": 29, "retiro": false, "a1": 0, "a2": 0, "log": 2, "cal": 55.71}, {"nombre": "Cifuentes Canaval, Sergio Andres", "doc": "1067860698", "pct": 100, "comp": 34, "retiro": false, "a1": 0, "a2": 1, "log": 3, "cal": 82.86}, {"nombre": "Cordero Peña, Juan Sebastian", "doc": "1018479086", "pct": 74, "comp": 25, "retiro": false, "a1": 1, "a2": 0, "log": 1, "cal": 71.43}, {"nombre": "Coronel Gaviria, Anabeli", "doc": "1059905170", "pct": 41, "comp": 14, "retiro": false, "a1": 1, "a2": 1, "log": 7, "cal": 41.43}, {"nombre": "Duarte Torres, Yurany", "doc": "1016045803", "pct": 88, "comp": 30, "retiro": false, "a1": 1, "a2": 0, "log": 1, "cal": 68.57}, {"nombre": "Durango, Isabel Cristina", "doc": "42786395", "pct": 79, "comp": 27, "retiro": false, "a1": 1, "a2": 1, "log": 6, "cal": 56.43}, {"nombre": "Estupiñan Peñaloza, Flor Marcela", "doc": "52192244", "pct": 41, "comp": 14, "retiro": false, "a1": 1, "a2": 0, "log": 4, "cal": 41.43}, {"nombre": "Fonseca Sepulveda, Eileen Viviana", "doc": "1032437828", "pct": 88, "comp": 30, "retiro": false, "a1": 0, "a2": 0, "log": 4, "cal": 48.57}, {"nombre": "Gallego Aristizabal, Paola Andrea", "doc": "1053833043", "pct": 9, "comp": 3, "retiro": false, "a1": 1, "a2": 1, "log": null, "cal": null}, {"nombre": "Gomez Chamorro, Estefania", "doc": "1005582793", "pct": 82, "comp": 28, "retiro": false, "a1": 1, "a2": 0, "log": 1, "cal": 57.14}, {"nombre": "Gonzalez Artunduaga, Eliana Andrea", "doc": "53114960", "pct": 59, "comp": 20, "retiro": false, "a1": 1, "a2": 1, "log": 1, "cal": 38.57}, {"nombre": "Gonzalez Florez, Hector Alirio", "doc": "19150204", "pct": null, "comp": null, "retiro": true, "a1": 0, "a2": 0, "log": null, "cal": null}, {"nombre": "Gutierrez Babativa, Liliana", "doc": "1019018207", "pct": 41, "comp": 14, "retiro": false, "a1": 1, "a2": 0, "log": 4, "cal": 42.86}, {"nombre": "Hernandez Celis, Annie Natalia", "doc": "1098756782", "pct": 94, "comp": 32, "retiro": false, "a1": 1, "a2": 0, "log": 5, "cal": 54.29}, {"nombre": "Insuasty Enriquez, Jesus Solier", "doc": "12969870", "pct": 53, "comp": 18, "retiro": false, "a1": 1, "a2": 1, "log": 5, "cal": 37.14}, {"nombre": "Lombana Quiñonez, Milton Alberto", "doc": "79791647", "pct": 94, "comp": 32, "retiro": false, "a1": 1, "a2": 0, "log": 2, "cal": 68.57}, {"nombre": "Lopez Castilla, Valeria", "doc": "1067898110", "pct": 62, "comp": 21, "retiro": false, "a1": 1, "a2": 1, "log": 1, "cal": 42.14}, {"nombre": "Manneh Amastha, Raimundo Patricio", "doc": "8684669", "pct": 74, "comp": 25, "retiro": false, "a1": 1, "a2": 1, "log": 4, "cal": 55.71}, {"nombre": "Martinez Gutierrez, Cindy Nathalie", "doc": "1032439081", "pct": 41, "comp": 14, "retiro": false, "a1": 1, "a2": 1, "log": 3, "cal": 42.14}, {"nombre": "Martinez Pinto, Juan Harvey", "doc": "1098635227", "pct": 62, "comp": 21, "retiro": false, "a1": 1, "a2": 1, "log": null, "cal": 40}, {"nombre": "Mejia Velez, Cesar Augusto", "doc": "1018440242", "pct": 85, "comp": 29, "retiro": false, "a1": 0, "a2": 0, "log": 6, "cal": 42.86}, {"nombre": "Mora Figueroa, Gloria Elena", "doc": "52778812", "pct": 47, "comp": 16, "retiro": false, "a1": 0, "a2": 1, "log": 4, "cal": 38.21}, {"nombre": "Mosquera Rengifo, Eyder", "doc": "4799931", "pct": 53, "comp": 18, "retiro": false, "a1": 1, "a2": 0, "log": 3, "cal": 37.14}, {"nombre": "Ortiz Gómez, Leon Darío", "doc": "70101872", "pct": 29, "comp": 10, "retiro": false, "a1": 1, "a2": 0, "log": 1, "cal": 40}, {"nombre": "Osorio Meñaca, Daniel", "doc": "1110545594", "pct": 74, "comp": 25, "retiro": false, "a1": 1, "a2": 0, "log": 2, "cal": 42.86}, {"nombre": "Pardo Carmona, Miguel Adolfo", "doc": "7535196", "pct": 88, "comp": 30, "retiro": false, "a1": 1, "a2": 1, "log": 26, "cal": 55.71}, {"nombre": "Parra Lara, Luis Gabriel", "doc": "1144065217", "pct": 100, "comp": 34, "retiro": false, "a1": 1, "a2": 1, "log": 2, "cal": 82.86}, {"nombre": "Parra Soto, Sandro", "doc": "9976701", "pct": 15, "comp": 5, "retiro": false, "a1": 0, "a2": 1, "log": null, "cal": null}, {"nombre": "Patarroyo Velasquez, David Alberto", "doc": "1020775418", "pct": 32, "comp": 11, "retiro": false, "a1": 1, "a2": 0, "log": null, "cal": 38.57}, {"nombre": "Pelaez Morales, Luisa Fernanda", "doc": "1128271852", "pct": 41, "comp": 14, "retiro": false, "a1": 0, "a2": 0, "log": 1, "cal": 38.21}, {"nombre": "Perez Carrillo, Jose Arnulfo", "doc": "13740130", "pct": 65, "comp": 22, "retiro": false, "a1": 1, "a2": 0, "log": null, "cal": 41.43}, {"nombre": "Pinilla Chaves, Paola Andrea", "doc": "52994796", "pct": 29, "comp": 10, "retiro": false, "a1": 1, "a2": 0, "log": 2, "cal": 35.71}, {"nombre": "Pinzon Espitia, Olga Lucia", "doc": "52283938", "pct": 21, "comp": 7, "retiro": false, "a1": 1, "a2": 0, "log": null, "cal": 37.14}, {"nombre": "Ramirez Ceron, Carlos Alberto", "doc": "79374879", "pct": 6, "comp": 2, "retiro": false, "a1": 1, "a2": 1, "log": null, "cal": 26.79}, {"nombre": "Ramirez Escobar, Ana Francisca", "doc": "66850037", "pct": 15, "comp": 5, "retiro": false, "a1": 1, "a2": 0, "log": 1, "cal": 42.86}, {"nombre": "Ramirez Galindo, Andres Enrique", "doc": "93404276", "pct": 88, "comp": 30, "retiro": false, "a1": 0, "a2": 0, "log": 7, "cal": 57.14}, {"nombre": "Rincon Oyuela, Giovanny Hernan", "doc": "5821895", "pct": 38, "comp": 13, "retiro": false, "a1": 1, "a2": 1, "log": 1, "cal": 42.86}, {"nombre": "Roa Culma, Laura Alejandra", "doc": "1106773305", "pct": 88, "comp": 30, "retiro": false, "a1": 1, "a2": 1, "log": 3, "cal": 57.14}, {"nombre": "Rodriguez Martinez, Maria Mercedes", "doc": "39784379", "pct": 94, "comp": 32, "retiro": false, "a1": 1, "a2": 1, "log": 3, "cal": 80}, {"nombre": "Solano Trujillo, Maria Helena", "doc": "41627178", "pct": 29, "comp": 10, "retiro": false, "a1": 1, "a2": 1, "log": null, "cal": null}, {"nombre": "Sossa Melo, Claudia Lucía", "doc": "63326983", "pct": 0, "comp": 0, "retiro": false, "a1": 1, "a2": 0, "log": null, "cal": null}, {"nombre": "Sotelo Rodriguez, Diana Carolina", "doc": "1075656029", "pct": 32, "comp": 11, "retiro": false, "a1": 0, "a2": 0, "log": null, "cal": 38.57}, {"nombre": "Suarez Vasquez, Luz Deisser", "doc": "39444504", "pct": 82, "comp": 28, "retiro": false, "a1": 0, "a2": 0, "log": 26, "cal": 57.14}, {"nombre": "Zuñiga Peña, Jainny Jemir", "doc": "5822315", "pct": 85, "comp": 29, "retiro": false, "a1": 1, "a2": 1, "log": 3, "cal": 37.14}];
+
+function progClass(p){ return p < 25 ? 'prog-baja' : (p < 75 ? 'prog-media' : 'prog-alta'); }
+
+function renderTabla(rows){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.nombre}</td>
+      <td>${r.retiro ? '<span class="tag-retiro">Sin dato</span>' : `<div class="prog-wrap"><div class="prog-bar"><div class="prog-fill ${progClass(r.pct)}" style="width:${r.pct}%"></div></div>${r.pct}%</div>`}</td>
+      <td>${r.retiro ? '-' : r.comp + '/34'}</td>
+      <td>${r.a1 ? '<span class="asis-si">Sí</span>' : '<span class="asis-no">No</span>'}</td>
+      <td>${r.a2 ? '<span class="asis-si">Sí</span>' : '<span class="asis-no">No</span>'}</td>
+      <td>${r.cal===null ? '<span class="asis-no">Sin calificación</span>' : r.cal + '%'}</td>
+      <td>${r.retiro ? '<span class="tag-retiro">Solicitud de retiro</span>' : 'Activo'}</td>
+    </tr>`).join('');
+}
+renderTabla(data);
+
+document.getElementById('buscar').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase();
+  renderTabla(data.filter(r => r.nombre.toLowerCase().includes(q)));
+});
+
+let sortState = {col:null, dir:1};
+document.querySelectorAll('#tabla thead th').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const col = parseInt(th.dataset.col);
+    const type = th.dataset.type;
+    sortState.dir = (sortState.col === col) ? -sortState.dir : 1;
+    sortState.col = col;
+    document.querySelectorAll('#tabla thead th').forEach(x=>x.classList.remove('sort-asc','sort-desc'));
+    th.classList.add(sortState.dir === 1 ? 'sort-asc' : 'sort-desc');
+    const q = document.getElementById('buscar').value.toLowerCase();
+    const filtered = data.filter(r => r.nombre.toLowerCase().includes(q));
+    const keyOf = (r) => {
+      if(col===0) return r.nombre;
+      if(col===1) return r.pct===null ? -1 : r.pct;
+      if(col===2) return r.a1;
+      if(col===3) return r.a2;
+      if(col===4) return r.retiro ? 1 : 0;
+      if(col===5) return r.comp===null ? -1 : r.comp;
+      if(col===6) return r.cal===null ? -1 : r.cal;
+    };
+    filtered.sort((a,b)=>{
+      let va = keyOf(a), vb = keyOf(b);
+      if(type==='num'){ return (va - vb) * sortState.dir; }
+      return String(va).localeCompare(String(vb)) * sortState.dir;
+    });
+    renderTabla(filtered);
+  });
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
